@@ -1,0 +1,221 @@
+basePath: /
+definitions:
+  api.FieldError:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  api.ResponseData:
+    properties:
+      data: {}
+      error:
+        items:
+          $ref: '#/definitions/api.FieldError'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  game.Cell:
+    properties:
+      col:
+        type: integer
+      row:
+        type: integer
+      value:
+        description: '"X", "O", or null'
+        type: string
+      winningCell:
+        type: boolean
+    type: object
+  game.CreateGame:
+    properties:
+      boardSize:
+        type: integer
+      currentPlayer:
+        type: string
+      gameName:
+        type: string
+      winningCondition:
+        type: integer
+    type: object
+  game.Game:
+    properties:
+      board:
+        items:
+          items:
+            $ref: '#/definitions/game.Cell'
+          type: array
+        type: array
+      createdAt:
+        type: string
+      currentPlayer:
+        type: string
+      gameName:
+        type: string
+      id:
+        type: string
+      isDraw:
+        type: boolean
+      oPlayer:
+        type: string
+      updatedAt:
+        type: string
+      winner:
+        type: string
+      winningCondition:
+        type: integer
+      xPlayer:
+        type: string
+    type: object
+  game.GetGamesCountResponse:
+    properties:
+      count:
+        type: integer
+    type: object
+  game.Move:
+    properties:
+      col:
+        type: integer
+      gameName:
+        type: string
+      player:
+        description: '"X" or "O"'
+        type: string
+      row:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the REST API for Online TicTacToe.
+  title: Online TicTacToe API
+  version: "1"
+paths:
+  /game/{gameName}:
+    get:
+      consumes:
+      - application/json
+      description: Get the game with the given parameters
+      parameters:
+      - description: Game name
+        in: query
+        name: gameName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/game.Game'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+      summary: Get a game
+      tags:
+      - game
+  /game/all/count:
+    get:
+      consumes:
+      - application/json
+      description: Get the number of games in the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/game.GetGamesCountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+      summary: Get number of games in the database
+      tags:
+      - game
+  /game/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new game with the given parameters
+      parameters:
+      - description: Game details
+        in: body
+        name: createGame
+        required: true
+        schema:
+          $ref: '#/definitions/game.CreateGame'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/game.Game'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+      summary: Create a new game
+      tags:
+      - game
+  /game/move:
+    post:
+      consumes:
+      - application/json
+      description: Post a move to the game with the given parameters
+      parameters:
+      - description: Move details
+        in: body
+        name: createMove
+        required: true
+        schema:
+          $ref: '#/definitions/game.Move'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/game.Game'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+      summary: Post a move
+      tags:
+      - game
+schemes:
+- http
+securityDefinitions:
+  BasicAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
