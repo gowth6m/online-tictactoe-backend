@@ -49,10 +49,8 @@ definitions:
         minimum: 3
         type: integer
     required:
-    - boardSize
     - currentPlayer
     - gameName
-    - winningCondition
     type: object
   game.Game:
     properties:
@@ -110,10 +108,8 @@ definitions:
         minimum: 0
         type: integer
     required:
-    - col
     - gameName
     - player
-    - row
     type: object
 host: localhost:8080
 info:

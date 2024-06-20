@@ -323,10 +323,8 @@ const docTemplate = `{
         "game.CreateGame": {
             "type": "object",
             "required": [
-                "boardSize",
                 "currentPlayer",
-                "gameName",
-                "winningCondition"
+                "gameName"
             ],
             "properties": {
                 "boardSize": {
@@ -415,10 +413,8 @@ const docTemplate = `{
         "game.Move": {
             "type": "object",
             "required": [
-                "col",
                 "gameName",
-                "player",
-                "row"
+                "player"
             ],
             "properties": {
                 "col": {

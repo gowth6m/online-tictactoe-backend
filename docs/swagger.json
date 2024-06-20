@@ -320,10 +320,8 @@
         "game.CreateGame": {
             "type": "object",
             "required": [
-                "boardSize",
                 "currentPlayer",
-                "gameName",
-                "winningCondition"
+                "gameName"
             ],
             "properties": {
                 "boardSize": {
@@ -412,10 +410,8 @@
         "game.Move": {
             "type": "object",
             "required": [
-                "col",
                 "gameName",
-                "player",
-                "row"
+                "player"
             ],
             "properties": {
                 "col": {
