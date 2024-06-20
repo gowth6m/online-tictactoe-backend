@@ -15,6 +15,35 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/game/all/clear": {
+            "post": {
+                "description": "Clears all games in the database (use with caution) - only for Cron Jobs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "game"
+                ],
+                "summary": "Clears all games in the database",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ResponseData"
+                        }
+                    }
+                }
+            }
+        },
         "/game/all/count": {
             "get": {
                 "description": "Get the number of games in the database",
@@ -191,6 +220,56 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/game/{gameName}/reset": {
+            "post": {
+                "description": "Reset a game with the given parameters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "game"
+                ],
+                "summary": "Reset a game given the game name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Game name",
+                        "name": "gameName",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/game.Game"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ResponseData"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api.ResponseData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ResponseData"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -243,18 +322,32 @@ const docTemplate = `{
         },
         "game.CreateGame": {
             "type": "object",
+            "required": [
+                "boardSize",
+                "currentPlayer",
+                "gameName",
+                "winningCondition"
+            ],
             "properties": {
                 "boardSize": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 15,
+                    "minimum": 3
                 },
                 "currentPlayer": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "X",
+                        "O"
+                    ]
                 },
                 "gameName": {
                     "type": "string"
                 },
                 "winningCondition": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 15,
+                    "minimum": 3
                 }
             }
         },
@@ -276,6 +369,9 @@ const docTemplate = `{
                 "currentPlayer": {
                     "type": "string"
                 },
+                "draws": {
+                    "type": "integer"
+                },
                 "gameName": {
                     "type": "string"
                 },
@@ -288,6 +384,9 @@ const docTemplate = `{
                 "oPlayer": {
                     "type": "string"
                 },
+                "oWins": {
+                    "type": "integer"
+                },
                 "updatedAt": {
                     "type": "string"
                 },
@@ -299,6 +398,9 @@ const docTemplate = `{
                 },
                 "xPlayer": {
                     "type": "string"
+                },
+                "xWins": {
+                    "type": "integer"
                 }
             }
         },
@@ -312,19 +414,30 @@ const docTemplate = `{
         },
         "game.Move": {
             "type": "object",
+            "required": [
+                "col",
+                "gameName",
+                "player",
+                "row"
+            ],
             "properties": {
                 "col": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "gameName": {
                     "type": "string"
                 },
                 "player": {
-                    "description": "\"X\" or \"O\"",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "X",
+                        "O"
+                    ]
                 },
                 "row": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         }

@@ -34,13 +34,25 @@ definitions:
   game.CreateGame:
     properties:
       boardSize:
+        maximum: 15
+        minimum: 3
         type: integer
       currentPlayer:
+        enum:
+        - X
+        - O
         type: string
       gameName:
         type: string
       winningCondition:
+        maximum: 15
+        minimum: 3
         type: integer
+    required:
+    - boardSize
+    - currentPlayer
+    - gameName
+    - winningCondition
     type: object
   game.Game:
     properties:
@@ -54,6 +66,8 @@ definitions:
         type: string
       currentPlayer:
         type: string
+      draws:
+        type: integer
       gameName:
         type: string
       id:
@@ -62,6 +76,8 @@ definitions:
         type: boolean
       oPlayer:
         type: string
+      oWins:
+        type: integer
       updatedAt:
         type: string
       winner:
@@ -70,6 +86,8 @@ definitions:
         type: integer
       xPlayer:
         type: string
+      xWins:
+        type: integer
     type: object
   game.GetGamesCountResponse:
     properties:
@@ -79,14 +97,23 @@ definitions:
   game.Move:
     properties:
       col:
+        minimum: 0
         type: integer
       gameName:
         type: string
       player:
-        description: '"X" or "O"'
+        enum:
+        - X
+        - O
         type: string
       row:
+        minimum: 0
         type: integer
+    required:
+    - col
+    - gameName
+    - player
+    - row
     type: object
 host: localhost:8080
 info:
@@ -126,6 +153,59 @@ paths:
           schema:
             $ref: '#/definitions/api.ResponseData'
       summary: Get a game
+      tags:
+      - game
+  /game/{gameName}/reset:
+    post:
+      consumes:
+      - application/json
+      description: Reset a game with the given parameters
+      parameters:
+      - description: Game name
+        in: query
+        name: gameName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/game.Game'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+      summary: Reset a game given the game name
+      tags:
+      - game
+  /game/all/clear:
+    post:
+      consumes:
+      - application/json
+      description: Clears all games in the database (use with caution) - only for
+        Cron Jobs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ResponseData'
+      summary: Clears all games in the database
       tags:
       - game
   /game/all/count:

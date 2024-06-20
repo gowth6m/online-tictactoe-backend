@@ -41,6 +41,9 @@ type Game struct {
 	IsDraw           bool               `bson:"isDraw" json:"isDraw"`
 	XPlayer          *string            `bson:"xPlayer,omitempty" json:"xPlayer,omitempty"`
 	OPlayer          *string            `bson:"oPlayer,omitempty" json:"oPlayer,omitempty"`
+	XWins            int                `bson:"xWins" json:"xWins"`
+	OWins            int                `bson:"oWins" json:"oWins"`
+	Draws            int                `bson:"draws" json:"draws"`
 	CreatedAt        time.Time          `bson:"createdAt" json:"createdAt"`
 	UpdatedAt        time.Time          `bson:"updatedAt" json:"updatedAt"`
 }
@@ -49,17 +52,35 @@ type Game struct {
 // ------------------------------------------ CREATE OBJECTS -----------------------------------------
 // ---------------------------------------------------------------------------------------------------
 type CreateGame struct {
-	GameName         string `bson:"gameName" json:"gameName"`
-	CurrentPlayer    string `bson:"currentPlayer" json:"currentPlayer"`
-	BoardSize        int    `bson:"boardSize" json:"boardSize"`
-	WinningCondition int    `bson:"winningCondition" json:"winningCondition"`
+	GameName         string `bson:"gameName" json:"gameName" validate:"required"`
+	CurrentPlayer    string `bson:"currentPlayer" json:"currentPlayer" validate:"required,oneof=X O"`
+	BoardSize        int    `bson:"boardSize" json:"boardSize" validate:"required,min=3,max=15"`
+	WinningCondition int    `bson:"winningCondition" json:"winningCondition" validate:"required,min=3,max=15,ltefield=BoardSize"`
 }
 
 type Move struct {
-	GameName string `bson:"gameName" json:"gameName"`
-	Player   string `bson:"player" json:"player"` // "X" or "O"
-	Row      int    `bson:"row" json:"row"`
-	Col      int    `bson:"col" json:"col"`
+	GameName string `bson:"gameName" json:"gameName" validate:"required"`
+	Player   string `bson:"player" json:"player" validate:"required,oneof=X O"`
+	Row      int    `bson:"row" json:"row" validate:"required,min=0"`
+	Col      int    `bson:"col" json:"col" validate:"required,min=0"`
+}
+
+type PushMoveMade struct {
+	GameName      string `bson:"gameName" json:"gameName"`
+	CurrentPlayer string `bson:"currentPlayer" json:"currentPlayer"` // "X" or "O"
+	Row           int    `bson:"row" json:"row"`
+	Col           int    `bson:"col" json:"col"`
+}
+
+type PushGameReset struct {
+	GameName      string `bson:"gameName" json:"gameName"`
+	CurrentPlayer string `bson:"currentPlayer" json:"currentPlayer"`
+}
+
+type PushPlayerJoin struct {
+	GameName      string `bson:"gameName" json:"gameName"`
+	JoiningPlayer string `bson:"joiningPlayer" json:"joiningPlayer"`
+	UserId        string `bson:"userId" json:"userId"`
 }
 
 // ---------------------------------------------------------------------------------------------------

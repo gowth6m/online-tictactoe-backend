@@ -27,10 +27,14 @@ func NewGameHandler(repo GameRepository) *GameHandler {
 // @Failure 500 {object} api.ResponseData
 // @Router /game/create [post]
 func (h *GameHandler) CreateGame(c *gin.Context) {
-
 	var createGame CreateGame
 	if err := c.ShouldBindJSON(&createGame); err != nil {
 		api.Error(c, http.StatusBadRequest, "Invalid request format or parameters", nil)
+		return
+	}
+
+	if err := ValidateCreateGame(createGame); err != nil {
+		api.Error(c, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
@@ -102,10 +106,14 @@ func (h *GameHandler) GetAllGamesCount(c *gin.Context) {
 // @Failure 500 {object} api.ResponseData
 // @Router /game/move [post]
 func (h *GameHandler) CreateMove(c *gin.Context) {
-
 	var move Move
 	if err := c.ShouldBindJSON(&move); err != nil {
 		api.Error(c, http.StatusBadRequest, "Invalid request format or parameters", nil)
+		return
+	}
+
+	if err := ValidateMove(move); err != nil {
+		api.Error(c, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
@@ -116,4 +124,51 @@ func (h *GameHandler) CreateMove(c *gin.Context) {
 	}
 
 	api.Success(c, http.StatusOK, "Move made successfully", game)
+}
+
+// @Summary Reset a game given the game name
+// @Description Reset a game with the given parameters
+// @Tags game
+// @Accept json
+// @Produce json
+// @Param gameName query string true "Game name"
+// @Success 200 {object} Game
+// @Failure 400 {object} api.ResponseData
+// @Failure 404 {object} api.ResponseData
+// @Failure 500 {object} api.ResponseData
+// @Router /game/{gameName}/reset [post]
+func (h *GameHandler) ResetGame(c *gin.Context) {
+
+	gameName := c.Param("gameName")
+	if gameName == "" {
+		api.Error(c, http.StatusBadRequest, "Invalid request format or parameters", nil)
+		return
+	}
+
+	game, err := h.Repo.ResetGame(c, gameName, c.GetString("userId"))
+	if err != nil {
+		api.Error(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	api.Success(c, http.StatusOK, "Game reset successfully", game)
+}
+
+// @Summary Clears all games in the database
+// @Description Clears all games in the database (use with caution) - only for Cron Jobs
+// @Tags game
+// @Accept json
+// @Produce json
+// @Success 200 {object} api.ResponseData
+// @Failure 500 {object} api.ResponseData
+// @Router /game/all/clear [post]
+func (h *GameHandler) ClearAllGames(c *gin.Context) {
+
+	err := h.Repo.ClearAllGames(c)
+	if err != nil {
+		api.Error(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	api.Success(c, http.StatusOK, "Games cleared successfully", nil)
 }
