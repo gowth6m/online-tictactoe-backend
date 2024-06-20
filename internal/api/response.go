@@ -10,7 +10,7 @@ type ResponseData struct {
 	Status  int           `json:"status"`
 	Message string        `json:"message"`
 	Data    interface{}   `json:"data,omitempty"`
-	Error   *[]FieldError `json:"error,omitempty"`
+	Errors  *[]FieldError `json:"errors,omitempty"`
 }
 
 type FieldError struct {
@@ -25,7 +25,7 @@ func ApiResponse(c *gin.Context, statusCode int, message string, data interface{
 		Status:  statusCode,
 		Message: message,
 		Data:    data,
-		Error:   errors,
+		Errors:  errors,
 	}
 
 	c.JSON(statusCode, response)

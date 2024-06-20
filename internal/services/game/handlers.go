@@ -1,11 +1,9 @@
 package game
 
 import (
-	"net/http"
-
-	"online-tictactoe/internal/api"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"online-tictactoe/internal/api"
 )
 
 type GameHandler struct {
@@ -33,14 +31,20 @@ func (h *GameHandler) CreateGame(c *gin.Context) {
 		return
 	}
 
-	if err := ValidateCreateGame(createGame); err != nil {
-		api.Error(c, http.StatusBadRequest, err.Error(), nil)
+	if field, err := ValidateCreateGame(createGame); err != nil {
+		fieldErrors := []api.FieldError{
+			{
+				Field:   &field,
+				Message: err.Error(),
+			},
+		}
+		api.Error(c, http.StatusBadRequest, err.Error(), &fieldErrors)
 		return
 	}
 
-	game, err := h.Repo.CreateGame(c, createGame, c.GetString("userId"))
+	game, err, fieldErrors := h.Repo.CreateGame(c, createGame, c.GetString("userId"))
 	if err != nil {
-		api.Error(c, http.StatusInternalServerError, err.Error(), nil)
+		api.Error(c, http.StatusInternalServerError, err.Error(), &fieldErrors)
 		return
 	}
 
@@ -112,8 +116,14 @@ func (h *GameHandler) CreateMove(c *gin.Context) {
 		return
 	}
 
-	if err := ValidateMove(move); err != nil {
-		api.Error(c, http.StatusBadRequest, err.Error(), nil)
+	if field, err := ValidateMove(move); err != nil {
+		fieldErrors := []api.FieldError{
+			{
+				Field:   &field,
+				Message: err.Error(),
+			},
+		}
+		api.Error(c, http.StatusBadRequest, err.Error(), &fieldErrors)
 		return
 	}
 

@@ -12,41 +12,42 @@ func init() {
 }
 
 // ValidateCreateGame validates the CreateGame struct
-func ValidateCreateGame(game CreateGame) error {
+func ValidateCreateGame(game CreateGame) (string, error) {
 	err := validate.Struct(game)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			switch err.StructField() {
 			case "GameName":
-				return errors.New("game name is required")
+				return "gameName", errors.New("game name is required")
 			case "CurrentPlayer":
-				return errors.New("current player is required and must be 'X' or 'O'")
+				return "currentPlayer", errors.New("current player is required and must be 'X' or 'O'")
 			case "BoardSize":
-				return errors.New("board size is required and must be between 3 and 15")
+				return "boardSize", errors.New("board size is required and must be between 3 and 15")
 			case "WinningCondition":
-				return errors.New("winning condition is required, must be between 3 and 15, and less than or equal to board size")
+				return "winningCondition", errors.New("winning condition is required, must be between 3 and 15, and less than or equal to board size")
 			}
 		}
 	}
-	return nil
+	return "", nil
 }
 
 // ValidateMove validates the Move struct
-func ValidateMove(move Move) error {
+func ValidateMove(move Move) (string, error) {
 	err := validate.Struct(move)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			switch err.StructField() {
 			case "GameName":
-				return errors.New("game name is required")
+				return "gameName", errors.New("game name is required")
 			case "Player":
-				return errors.New("player is required and must be 'X' or 'O'")
+				return "player", errors.New("player is required and must be 'X' or 'O'")
 			case "Row":
-				return errors.New("row is required and must be 0 or greater")
+				return "row", errors.New("row is required and must be 0 or greater")
 			case "Col":
-				return errors.New("column is required and must be 0 or greater")
+				return "col", errors.New("column is required and must be 0 or greater")
 			}
 		}
 	}
-	return nil
+	return "", nil
 }
+

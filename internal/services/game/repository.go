@@ -3,16 +3,19 @@ package game
 import (
 	"context"
 	"errors"
+	"online-tictactoe/internal/api"
+	"online-tictactoe/internal/db"
+	"online-tictactoe/internal/pusher"
+	"online-tictactoe/pkg/utils"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"online-tictactoe/internal/db"
-	"online-tictactoe/internal/pusher"
-	"time"
 )
 
 type GameRepository interface {
-	CreateGame(c context.Context, createGame CreateGame, userId string) (Game, error)
+	CreateGame(c context.Context, createGame CreateGame, userId string) (Game, error, []api.FieldError)
 	GetGame(c context.Context, universityID string, userId string) (Game, error)
 	GetGamesCount(c context.Context) (GetGamesCountResponse, error)
 	CreateMove(c context.Context, move Move, userId string) (Game, error)
@@ -41,14 +44,20 @@ func NewGameRepository() GameRepository {
  * @return Game
  * @return error
  */
-func (r *repositoryImpl) CreateGame(c context.Context, createGame CreateGame, userId string) (Game, error) {
+func (r *repositoryImpl) CreateGame(c context.Context, createGame CreateGame, userId string) (Game, error, []api.FieldError) {
 	// Check if a game with the same name already exists
 	var existingGame Game
 	err := r.collection.FindOne(c, bson.M{"gameName": createGame.GameName}).Decode(&existingGame)
 	if err == nil {
-		return Game{}, errors.New("game name already exists! Join the game instead")
+		fieldErrors := []api.FieldError{
+			{
+				Field:   utils.StringPtr("gameName"),
+				Message: "game name already exists! Join the game instead",
+			},
+		}
+		return Game{}, errors.New("game name already exists! Join the game instead"), fieldErrors
 	} else if err != mongo.ErrNoDocuments {
-		return Game{}, err
+		return Game{}, err, []api.FieldError{}
 	}
 
 	// Create an empty board
@@ -81,11 +90,11 @@ func (r *repositoryImpl) CreateGame(c context.Context, createGame CreateGame, us
 
 	res, err := r.collection.InsertOne(c, game)
 	if err != nil {
-		return Game{}, err
+		return Game{}, err, []api.FieldError{}
 	}
 
 	game.ID = res.InsertedID.(primitive.ObjectID)
-	return game, nil
+	return game, nil, []api.FieldError{}
 }
 
 /**
