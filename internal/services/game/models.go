@@ -54,15 +54,15 @@ type Game struct {
 type CreateGame struct {
 	GameName         string `bson:"gameName" json:"gameName" validate:"required"`
 	CurrentPlayer    string `bson:"currentPlayer" json:"currentPlayer" validate:"required,oneof=X O"`
-	BoardSize        int    `bson:"boardSize" json:"boardSize" validate:"required,min=3,max=15"`
-	WinningCondition int    `bson:"winningCondition" json:"winningCondition" validate:"required,min=3,max=15,ltefield=BoardSize"`
+	BoardSize        int    `bson:"boardSize" json:"boardSize" validate:"min=3,max=15"`
+	WinningCondition int    `bson:"winningCondition" json:"winningCondition" validate:"min=3,max=15,ltefield=BoardSize"`
 }
 
 type Move struct {
 	GameName string `bson:"gameName" json:"gameName" validate:"required"`
 	Player   string `bson:"player" json:"player" validate:"required,oneof=X O"`
-	Row      int    `bson:"row" json:"row" validate:"required,min=0"`
-	Col      int    `bson:"col" json:"col" validate:"required,min=0"`
+	Row      int    `bson:"row" json:"row" validate:"min=0"`
+	Col      int    `bson:"col" json:"col" validate:"min=0"`
 }
 
 type PushMoveMade struct {
