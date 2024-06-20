@@ -6,6 +6,9 @@ This is a backend for the Online TicTacToe project - you can play TicTacToe with
 
 It's built with Go, Gin-Gonic, MongoDB driver and Pusher. Uses MongoDB to store game objects, users, etc and Pusher for push notifications. There is also a Cron job that runs at 05:00 AM (UTC), every 2 days to reset games database. The architecture is a serverless approach using Vercel's serverless functions.
 
+View the frontend repository [here](https://github.com/gowth6m/online-tictactoe-frontend) and the live demo [here](https://online-tictactoe.vercel.app)
+
+
 ## How to run server
 
 1. Clone the repository
