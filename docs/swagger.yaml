@@ -10,7 +10,7 @@ definitions:
   api.ResponseData:
     properties:
       data: {}
-      error:
+      errors:
         items:
           $ref: '#/definitions/api.FieldError'
         type: array
@@ -111,7 +111,7 @@ definitions:
     - gameName
     - player
     type: object
-host: localhost:8080
+host: api-online-tictactoe.vercel.app
 info:
   contact: {}
   description: This is the REST API for Online TicTacToe.
@@ -288,7 +288,7 @@ paths:
       tags:
       - game
 schemes:
-- http
+- https
 securityDefinitions:
   BasicAuth:
     in: header

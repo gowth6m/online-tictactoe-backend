@@ -7,10 +7,11 @@ import (
 
 type Config struct {
 	App struct {
-		Host       string `envconfig:"APP_HOST" default:"localhost"`
-		Port       string `envconfig:"APP_PORT" default:"8080"`
-		ApiVersion string `envconfig:"API_VERSION" default:"v0"`
-		AppVersion string `envconfig:"APP_VERSION" default:"v0.0.1"`
+		Host        string `envconfig:"APP_HOST" default:"localhost"`
+		Port        string `envconfig:"APP_PORT" default:"8080"`
+		ApiVersion  string `envconfig:"API_VERSION" default:"v0"`
+		AppVersion  string `envconfig:"APP_VERSION" default:"v0.0.1"`
+		Environment string `envconfig:"ENVIRONMENT" default:"local"`
 	}
 	Database struct {
 		MongoURI      string `envconfig:"DATABASE_URL" default:"mongodb://localhost:27017"`
@@ -28,6 +29,10 @@ type Config struct {
 		AllowMethods     []string `envconfig:"CORS_ALLOW_METHODS" default:"GET, POST, PUT, DELETE, OPTIONS"`
 		AllowHeaders     []string `envconfig:"CORS_ALLOW_HEADERS" default:"Origin, Content-Length, Content-Type, Authorization, Tenant"`
 		AllowCredentials bool     `envconfig:"CORS_ALLOW_CREDENTIALS" default:"true"`
+	}
+	Vercel struct {
+		CronSecret  string `envconfig:"CRON_SECRET" default:""`
+		DeployedURL string `envconfig:"DEPLOYED_URL" default:"https://online-tictactoe.vercel.app"`
 	}
 }
 

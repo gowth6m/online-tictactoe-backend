@@ -14,9 +14,9 @@ import (
 // @title Online TicTacToe API
 // @version 1
 // @description This is the REST API for Online TicTacToe.
-// @host localhost:8080
+// @host api-online-tictactoe.vercel.app
 // @BasePath /
-// @schemes http
+// @schemes https
 // @securityDefinitions.apikey BasicAuth
 // @in header
 // @name Authorization

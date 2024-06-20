@@ -1,6 +1,6 @@
 {
     "schemes": [
-        "http"
+        "https"
     ],
     "swagger": "2.0",
     "info": {
@@ -9,7 +9,7 @@
         "contact": {},
         "version": "1"
     },
-    "host": "localhost:8080",
+    "host": "api-online-tictactoe.vercel.app",
     "basePath": "/",
     "paths": {
         "/game/all/clear": {
@@ -285,7 +285,7 @@
             "type": "object",
             "properties": {
                 "data": {},
-                "error": {
+                "errors": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/api.FieldError"

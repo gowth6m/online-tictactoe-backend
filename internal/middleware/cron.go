@@ -1,17 +1,16 @@
 package middleware
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"online-tictactoe/internal/api"
-	"os"
-
-	"github.com/gin-gonic/gin"
+	"online-tictactoe/internal/config"
 )
 
 // CronJobAuthMiddleware checks if the Authorization header matches the CRON_SECRET set in Vercel
 func CronJobAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cronJobSecret := os.Getenv("CRON_SECRET")
+		cronJobSecret := config.AppConfig().Vercel.CronSecret
 		if cronJobSecret == "" {
 			api.Error(c, http.StatusInternalServerError, "CRON_SECRET not set", nil)
 			return

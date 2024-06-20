@@ -288,7 +288,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "data": {},
-                "error": {
+                "errors": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/api.FieldError"
@@ -450,9 +450,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1",
-	Host:             "localhost:8080",
+	Host:             "api-online-tictactoe.vercel.app",
 	BasePath:         "/",
-	Schemes:          []string{"http"},
+	Schemes:          []string{"https"},
 	Title:            "Online TicTacToe API",
 	Description:      "This is the REST API for Online TicTacToe.",
 	InfoInstanceName: "swagger",

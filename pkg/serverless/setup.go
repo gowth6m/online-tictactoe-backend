@@ -25,7 +25,8 @@ func Initialize() (*gin.Engine, func()) {
 
 	db.ConnectToMongoDB()
 	pusher.Init()
-
+	gin.SetMode(gin.ReleaseMode)
+	
 	router := gin.Default()
 	routes.SetupRoutes(router)
 	router.Use(cors.New(cors.Config{
